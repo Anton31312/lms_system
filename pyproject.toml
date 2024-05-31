@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "lms-system"
+version = "0.1.0"
+description = "For online study"
+authors = ["Антон Федяев <fearthe54@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+djangorestframework = "^3.15.1"
+psycopg2-binary = "^2.9.9"
+pillow = "^10.3.0"
+django = "^5.0.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
