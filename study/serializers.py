@@ -24,5 +24,4 @@ class CourseSerializer(serializers.ModelSerializer):
         if instance.lesson_set.all():
            return len(instance.lesson_set.all())
         return 0
-
        
