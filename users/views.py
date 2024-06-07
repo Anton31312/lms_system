@@ -31,5 +31,5 @@ class PaymentRetrieveAPIView(generics.RetrieveAPIView):
 class PaymentUpdateAPIView(generics.UpdateAPIView):
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()  
-    permission_classes = [IsAuthenticated]    
+    permission_classes = [IsAuthenticated]   
 

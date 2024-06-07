@@ -30,4 +30,22 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'урок'
         verbose_name_plural = 'уроки'
+
+
+class Subscribe(models.Model):
+    STATUS_SUB = [
+        ('subscribe', 'подписан'),
+        ('not_subscribe', 'не подписан'),
+    ]
     
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="курс")
+    status = models.CharField(max_length=50, choices=STATUS_SUB, verbose_name='статус подписки',
+                              default='subscribe')
+
+    def __str__(self):
+        return f"{self.user} ({self.course}) - {self.status}"
+    
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
