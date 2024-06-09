@@ -17,7 +17,7 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__' 
-        validators = [SiteValidatior(field='url_link')]
+        validators = [SiteValidatior(url='url_link')]
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -37,4 +37,4 @@ class CourseSerializer(serializers.ModelSerializer):
        
     def get_subscribe(self, instance):
         user = self.context['request'].user
-        return Subscribe.objects.all().filter(user=user).filter(course=instance).exists()
+        return Subscribe.objects.filter(user=user, course=instance).exists()

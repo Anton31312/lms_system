@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from users.models import Payment, User
 from users.serializers import PaymentSerializer, UserSerializer
+from users.services import create_stripe_price, create_stripe_product, create_stripe_session
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -13,6 +14,17 @@ class UserViewSet(viewsets.ModelViewSet):
 class PaymentCreateAPIView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        payment.user = self.request.user
+        stripe_product_id = create_stripe_product(payment)
+        payment.amount = payment.payment_amount
+        price = create_stripe_price(stripe_product_id=stripe_product_id, amount=payment.amount)
+        session_id, payment_link = create_stripe_session(price=price)
+        payment.session_id = session_id
+        payment.link = payment_link
+        payment.save()
 
 class PaymentListAPIView(generics.ListAPIView):
     serializer_class = PaymentSerializer

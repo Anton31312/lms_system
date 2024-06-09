@@ -73,7 +73,7 @@ class SubscribeCreateAPIView(generics.CreateAPIView):
         user = self.request.user
         course_id = self.request.data.get('course')
         course = get_object_or_404(Course, pk=course_id)
-        subs_item = Subscribe.objects.all().filter(user=user).filter(course=course)
+        subs_item = Subscribe.objects.filter(user=user, course=course)
 
         if subs_item.exists():
             subs_item.delete()
