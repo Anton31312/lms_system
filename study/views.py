@@ -8,6 +8,7 @@ from study.models import Course, Lesson, Subscribe
 from study.paginators import StudyPaginator
 from study.permissions import IsOwner, IsStaff
 from study.serializers import CourseSerializer, LessonSerializer, SubscribeSerializer
+from study.tasks import send_email_update
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -19,6 +20,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_course = serializer.save()
         new_course.owner = self.request.user
         new_course.save()
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        print(self.request.user.pk)
+        send_email_update.delay(course.pk, self.request.user.pk, self.request.user.email)
 
     def get_permissions(self):
         if self.action == 'list':

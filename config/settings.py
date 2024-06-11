@@ -165,6 +165,51 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_ALL_ORIGINS = False
 
-#API
+# Настройки Cache Redis
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == 'True'
 
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv('CACHE_LOCATION'),
+        }
+    }
+
+# Настройка API
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
+
+
+# Настройки для Celery
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'users.tasks.check_last_login',  # Путь к задаче
+        'schedule': timedelta(weeks=4), 
+    },
+}
+
+# URL-адрес брокера сообщений
+CELERY_BROKER_URL = os.getenv('CACHE_LOCATION')
+
+# URL-адрес брокера результатов, также Redis  
+CELERY_RESULT_BACKEND = os.getenv('CACHE_LOCATION') 
+
+# Часовой пояс для работы Celery
+CELERY_TIMEZONE = "Australia/Tasmania"
+
+# Флаг отслеживания выполнения задач
+CELERY_TASK_TRACK_STARTED = True 
+
+# Максимальное время на выполнение задачи
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# Настройки Email
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_PORT = os.getenv('EMAIL_PORT')
+    EMAIL_USE_SSL = True
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

@@ -13,7 +13,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
 class LessonSerializer(serializers.ModelSerializer):
 
-
     class Meta:
         model = Lesson
         fields = '__all__' 
@@ -38,3 +37,13 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_subscribe(self, instance):
         user = self.context['request'].user
         return Subscribe.objects.filter(user=user, course=instance).exists()
+    
+    def create(self, validated_data):
+        lesson = validated_data.pop('lesson_set')
+
+        course_item = Course.objects.create(**validated_data)
+
+        for l in lesson:
+            Lesson.objects.create(**l, course=course_item)
+
+        return course_item

@@ -23,9 +23,10 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="курс")
     url_link = models.CharField(max_length=500, verbose_name='ссылка на видео')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')
-    
+
+
     def __str__(self):
-        return f"{self.title}"
+        return f"{self.title} - {self.url_link}"
     
     class Meta:
         verbose_name = 'урок'
